@@ -1,13 +1,13 @@
 /* eslint-disable lines-between-class-members */
-import express, { Application } from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import { error404 } from '@middlewares/notFoundHandler';
-import { httpErrorHandler } from '@middlewares/errorHandler';
-import userRoute from '@routes/user.route';
-import authRoute from '@routes/auth.route';
-import { verify } from '@middlewares/jwt';
 import { Roles } from '@interfaces/User.interface';
+import { httpErrorHandler } from '@middlewares/errorHandler';
+import { verify } from '@middlewares/jwt';
+import { error404 } from '@middlewares/notFoundHandler';
+import authRoute from '@routes/auth.route';
+import userRoute from '@routes/user.route';
+import cors from 'cors';
+import express, { Application } from 'express';
+import morgan from 'morgan';
 
 class App {
   private app: Application;
@@ -31,7 +31,7 @@ class App {
   }
 
   private initErrorHandlers() {
-    this.app.use(error404);
+    this.app.use('*', error404);
     this.app.use(httpErrorHandler);
   }
 

@@ -2,7 +2,7 @@ import { body, param } from 'express-validator';
 
 export default {
   create: [
-    body('fullaname').exists(),
+    body('fullname').exists(),
     body('roles').exists().isArray().withMessage('has to be a valid array'),
     body('username').exists(),
     body('password').exists().isStrongPassword().withMessage('has to be a strong alpha-numeric-symbol passwword'),
