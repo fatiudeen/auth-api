@@ -1,50 +1,58 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
-import { Model } from 'mongoose';
-import User from '@models/User';
 import { UserInterface } from '@interfaces/User.interface';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JWT_KEY } from '@config';
+import { PrismaClient } from '@prisma/client';
 
 class UserService {
-  protected model;
-  constructor(model: Model<UserInterface>) {
-    this.model = model;
-  }
-  find(data?: Partial<UserInterface>) {
-    const doc = data || {};
-    return this.model.find(doc);
+  protected model = new PrismaClient();
+  find() {
+    return this.model.user.findMany();
   }
 
   findOne(data: string | Partial<UserInterface>) {
-    if (typeof data === 'object') return this.model.findOne(data);
-    return this.model.findById(data);
+    if (typeof data === 'object') return this.model.user.findFirst({ where: <any>data });
+    return this.model.user.findFirst({
+      where: {
+        id: <number>(<unknown>data),
+      },
+    });
   }
 
   update(query: string | Partial<UserInterface>, data: Partial<UserInterface>) {
-    if (typeof query === 'object') return this.model.findOneAndUpdate(query, data);
-    return this.model.findByIdAndUpdate(query, data, { new: true });
+    if (typeof query === 'object') return this.model.user.update({ where: <any>query, data });
+    return this.model.user.update({
+      where: {
+        id: <number>(<unknown>query),
+      },
+      data,
+    });
   }
 
-  updateMany(query: Partial<UserInterface>, data: Partial<UserInterface>) {
-    return this.model.updateMany(query, data);
-  }
+  // updateMany(query: Partial<UserInterface>, data: Partial<UserInterface>) {
+  //   return this.model.updateMany(query, data);
+  // }
   create(data: UserInterface) {
-    return this.model.create(data);
+    return this.model.user.create({ data });
   }
 
   delete(data: string | Partial<UserInterface>) {
-    if (typeof data === 'object') return this.model.findOneAndDelete(data);
-    return this.model.findByIdAndDelete(data, { new: true });
+    if (typeof data === 'object') return this.model.user.delete({ where: <any>data });
+    return this.model.user.delete({
+      where: {
+        id: <number>(<unknown>data),
+      },
+    });
   }
 
-  load(id: string, data: Partial<UserInterface> | Partial<UserInterface>[]) {
-    if (Array.isArray(data)) {
-      return this.model.findByIdAndUpdate(id, { $push: { $each: data } }, { new: true });
-    }
-    return this.model.findByIdAndUpdate(id, { $push: data }, { new: true });
-  }
+  // load(id: string, data: Partial<UserInterface> | Partial<UserInterface>[]) {
+  //   if (Array.isArray(data)) {
+  //     return this.model.findByIdAndUpdate(id, { $push: { $each: data } }, { new: true });
+  //   }
+  //   return this.model.findByIdAndUpdate(id, { $push: data }, { new: true });
+  // }
 
   async genHash(password: string) {
     const salt = await bcrypt.genSalt(10);
@@ -55,10 +63,10 @@ class UserService {
     return bcrypt.compare(password, user.password);
   }
 
-  getSignedToken(user: UserInterface & { _id: string }) {
+  getSignedToken(user: UserInterface & { id: string }) {
     // eslint-disable-next-line no-underscore-dangle
-    return jwt.sign({ _id: user._id }, <string>JWT_KEY, {});
+    return jwt.sign({ id: user.id }, <string>JWT_KEY, {});
   }
 }
 
-export default new UserService(User);
+export default new UserService();

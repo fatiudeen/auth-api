@@ -20,7 +20,7 @@ class UserController {
   };
   get = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.service.find().lean();
+      const result = await this.service.find();
       HttpResponse.send(res, result);
     } catch (error) {
       next(error);

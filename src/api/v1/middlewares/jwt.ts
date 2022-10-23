@@ -14,23 +14,19 @@ declare module 'express' {
   }
 }
 // eslint-disable-next-line consistent-return
-export const verify = (roles: number[]) => async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const verify = (roles: number[]) => async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers.authorization
-      && req.headers.authorization.split(' ')[0] === 'Bearer'
-      ? req.headers.authorization.split(' ')[1]
-      : null;
+    const token =
+      req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer'
+        ? req.headers.authorization.split(' ')[1]
+        : null;
 
     if (!token) {
       throw new HttpError(MESSAGES.UNAUTHORIZED, 401);
     }
-    const decoded = <UserInterface & { _id: string }>jwt.verify(token, <string>JWT_KEY);
+    const decoded = <UserInterface & { id: string }>jwt.verify(token, <string>JWT_KEY);
 
-    const user = await UserService.findOne(decoded._id);
+    const user = await UserService.findOne(decoded.id);
 
     if (!user) {
       throw new HttpError(MESSAGES.UNAUTHORIZED, 401);
