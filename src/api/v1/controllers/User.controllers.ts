@@ -1,9 +1,9 @@
 /* eslint-disable lines-between-class-members */
-import { Request, Response, NextFunction } from 'express';
-import UserService from '@services/User.service';
-import { UserInterface } from '@interfaces/User.interface';
-import HttpResponse from '@helpers/HttpResponse';
 import HttpError from '@helpers/HttpError';
+import HttpResponse from '@helpers/HttpResponse';
+import { UserInterface } from '@interfaces/User.interface';
+import UserService from '@services/User.service';
+import { NextFunction, Request, Response } from 'express';
 
 class UserController {
   protected service = UserService;
@@ -48,7 +48,7 @@ class UserController {
 
   delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.service.update(req.params[this.resourceId], req.body);
+      const result = await this.service.delete(req.params[this.resourceId]);
       if (!result) throw new HttpError(`${this.resource} not found`, 404);
       HttpResponse.send(res, result);
     } catch (error) {

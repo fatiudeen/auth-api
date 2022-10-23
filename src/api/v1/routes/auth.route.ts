@@ -1,12 +1,12 @@
 /* eslint-disable lines-between-class-members */
-import { Router } from 'express';
-import { validator } from '@middlewares/validator';
-import authController from '@controllers/Auth.controllers';
+import AuthController from '@controllers/Auth.controllers';
 import userDto from '@dtos/user.dto';
+import { validator } from '@middlewares/validator';
+import { Router } from 'express';
 
 class AuthRoute {
   private router;
-  private controller = new authController();
+  private controller = new AuthController();
   private validator = validator;
   private dto = userDto;
   constructor() {
