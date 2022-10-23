@@ -6,9 +6,9 @@ import HttpResponse from '@helpers/HttpResponse';
 import HttpError from '@helpers/HttpError';
 
 class UserController {
-  private service = UserService;
-  private resourceId = 'userId';
-  private resource = 'user';
+  protected service = UserService;
+  protected resourceId = 'userId';
+  protected resource = 'user';
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = <UserInterface>req.body;
@@ -57,4 +57,4 @@ class UserController {
   };
 }
 
-export default new UserController();
+export default UserController;

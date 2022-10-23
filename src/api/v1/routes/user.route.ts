@@ -6,7 +6,7 @@ import userDto from '@dtos/user.dto';
 
 class UserRoute {
   private router;
-  private controller = UserControllers;
+  private controller = new UserControllers();
   private validator = validator;
   private dto = userDto;
   constructor() {

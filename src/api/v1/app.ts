@@ -4,7 +4,10 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { error404 } from '@middlewares/notFoundHandler';
 import { httpErrorHandler } from '@middlewares/errorHandler';
-import userRoute from './route/user.route';
+import userRoute from '@routes/user.route';
+import authRoute from '@routes/auth.route';
+import { verify } from '@middlewares/jwt';
+import { Roles } from '@interfaces/User.interface';
 
 class App {
   private app: Application;
@@ -23,7 +26,8 @@ class App {
   }
 
   private initRoutes() {
-    this.app.use('/api/v1/users', userRoute.initRoutes());
+    this.app.use('/api/v1/', authRoute.initRoutes());
+    this.app.use('/api/v1/users', verify([Roles.admin, Roles.superAdmin, Roles.student]), userRoute.initRoutes());
   }
 
   private initErrorHandlers() {

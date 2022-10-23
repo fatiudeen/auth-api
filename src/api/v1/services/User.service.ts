@@ -1,7 +1,11 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable lines-between-class-members */
 import { Model } from 'mongoose';
 import User from '@models/User';
 import { UserInterface } from '@interfaces/User.interface';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { JWT_KEY } from '@config';
 
 class UserService {
   protected model;
@@ -40,6 +44,20 @@ class UserService {
       return this.model.findByIdAndUpdate(id, { $push: { $each: data } }, { new: true });
     }
     return this.model.findByIdAndUpdate(id, { $push: data }, { new: true });
+  }
+
+  async genHash(password: string) {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
+  }
+
+  comparePasswords(password: string, user: UserInterface) {
+    return bcrypt.compare(password, user.password);
+  }
+
+  getSignedToken(user: UserInterface & { _id: string }) {
+    // eslint-disable-next-line no-underscore-dangle
+    return jwt.sign({ _id: user._id }, <string>JWT_KEY, {});
   }
 }
 

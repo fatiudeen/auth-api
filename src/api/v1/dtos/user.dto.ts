@@ -17,4 +17,8 @@ export default {
       }),
   ],
   id: [param('userId').exists()],
+  login: [
+    body('username').exists(),
+    body('password').exists().isStrongPassword().withMessage('has to be a strong alpha-numeric-symbol passwword'),
+  ],
 };

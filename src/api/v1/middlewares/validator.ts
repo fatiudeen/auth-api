@@ -6,7 +6,7 @@ import {
 } from 'express-validator';
 import { Request, Response, NextFunction } from 'express';
 import { MESSAGES } from '@config';
-import HttpError from '../helpers/HttpError';
+import HttpError from '@helpers/HttpError';
 
 function checkIfExtraFields(req: Request) {
   const allowedFields = Object.keys(matchedData(req)).sort();
