@@ -12,8 +12,10 @@ class AuthController extends UserController {
       if ((await this.service.findOne({ username: req.body.username })) !== null) {
         throw new HttpError(MESSAGES.USER_EXISTS, 400);
       }
+      const { body } = req;
+      delete body.passwordConfirmation;
       const password = await this.service.genHash(req.body.password);
-      const data = <UserInterface>{ ...req.body, password };
+      const data = <UserInterface>{ ...body, password };
       const user = await this.service.create(data);
       const token = this.service.getSignedToken(<any>user);
       HttpResponse.send(res, { user, token });
